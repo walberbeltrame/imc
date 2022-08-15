@@ -81,12 +81,10 @@ class Imc extends React.Component {
       let maior = this.state.maior;
       if (maior) {
         resultado += this.tipo(imc, 18.5, 24.9, 29.9, 34.9, 39.9);
+      } else if (masculino) {
+        resultado += this.tipo(imc, 17.8, 26.4, 30.6, 34.9, 39.9);
       } else {
-        if (masculino) {
-          resultado += this.tipo(imc, 17.8, 26.4, 30.6, 34.9, 39.9);
-        } else {
-          resultado += this.tipo(imc, 16.9, 25.9, 30.7, 34.9, 39.9);
-        }
+        resultado += this.tipo(imc, 16.9, 25.9, 30.7, 34.9, 39.9);
       }
     }
     return resultado;
