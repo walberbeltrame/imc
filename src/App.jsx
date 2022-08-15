@@ -4,6 +4,9 @@ import React from 'react'
 
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import InputAdornment from '@mui/material/InputAdornment';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -18,10 +21,14 @@ class Imc extends React.Component {
     super(props);
     this.setPeso = this.setPeso.bind(this);
     this.setAltura = this.setAltura.bind(this);
+    this.setMasculino = this.setMasculino.bind(this);
+    this.setMaior = this.setMaior.bind(this);
     this.resultado = this.resultado.bind(this);
     this.state = {
       peso: null,
-      altura: null
+      altura: null,
+      masculino: null,
+      maior: null
     };
   }
 
@@ -33,6 +40,14 @@ class Imc extends React.Component {
     this.setState({ altura: event.target.value });
   }
 
+  setMasculino(event) {
+    this.setState({ masculino: event.target.checked });
+  }
+
+  setMaior(event) {
+    this.setState({ maior: event.target.checked });
+  }
+
   calcular() {
     let peso = this.state.peso;
     let altura = this.state.altura;
@@ -41,23 +56,37 @@ class Imc extends React.Component {
     }
   }
 
+  tipo(imc, a, b, c, d, e) {
+    if (imc < a) {
+      return "Abaixo do peso";
+    } else if (imc < b) {
+      return "Peso normal";
+    } else if (imc < c) {
+      return "Acima do peso (sobrepeso)";
+    } else if (imc < d) {
+      return "Obesidade I";
+    } else if (imc < e) {
+      return "Obesidade II";
+    } else {
+      return "Obesidade III";
+    }
+  }
+
   resultado() {
     let resultado = new String();
     let imc = this.calcular();
     if (imc) {
       resultado += imc.toFixed(2) + " - ";
-      if (imc < 18.5) {
-        resultado += "Abaixo do peso";
-      } else if (imc < 24.9) {
-        resultado += "Peso normal";
-      } else if (imc < 29.9) {
-        resultado += "Acima do peso (sobrepeso)";
-      } else if (imc < 34.9) {
-        resultado += "Obesidade I";
-      } else if (imc < 39.9) {
-        resultado += "Obesidade II";
+      let masculino = this.state.masculino;
+      let maior = this.state.maior;
+      if (maior) {
+        resultado += this.tipo(imc, 18.5, 24.9, 29.9, 34.9, 39.9);
       } else {
-        resultado += "Obesidade III";
+        if (masculino) {
+          resultado += this.tipo(imc, 17.8, 26.4, 30.6, 34.9, 39.9);
+        } else {
+          resultado += this.tipo(imc, 16.9, 25.9, 30.7, 34.9, 39.9);
+        }
       }
     }
     return resultado;
@@ -73,12 +102,22 @@ class Imc extends React.Component {
               marginTop: 8,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'left',
             }}
           >
             <Typography component="h1" variant="h5">
               Calculadora de IMC
             </Typography>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch onChange={this.setMasculino} />}
+                label="Masculino"
+              />
+              <FormControlLabel
+                control={<Switch onChange={this.setMaior} />}
+                label="Maior de idade"
+              />
+            </FormGroup>
             <TextField
               onChange={this.setPeso}
               margin="normal"
