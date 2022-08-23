@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -24,6 +25,7 @@ class Imc extends React.Component {
     this.setMasculino = this.setMasculino.bind(this);
     this.setMaior = this.setMaior.bind(this);
     this.resultado = this.resultado.bind(this);
+    this.enviar = this.enviar.bind(this);
     this.state = {
       peso: null,
       altura: null,
@@ -90,6 +92,26 @@ class Imc extends React.Component {
     return resultado;
   }
 
+  enviar() {
+    let date = new Date().toISOString();
+    date = date.replace(/([^T]+)T([^\.]+).*/g, '$1 $2');
+    let imc = this.calcular();
+    if (imc) {
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      let requestOptions = {
+          method: "post",
+          headers: myHeaders,
+          redirect: "follow",
+          body: JSON.stringify([[date,imc]])
+      };
+      fetch("https://v1.nocodeapi.com/walberbeltrame/google_sheets/RzsnNxrSrCTvyeqs?tabId=Dados", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+    }
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -147,6 +169,23 @@ class Imc extends React.Component {
             <Typography component="h1" variant="h6">
               {this.resultado()}
             </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'inline',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              onClick={this.enviar}
+              variant="contained">
+              Enviar
+            </Button>
+            <Button
+              href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRf0xa-394vcfV_au5EVupnIPqKjvqFEw0GUgX4C45ZR0__jTEHRDVoMRPfe3mtpncxV7fKud8pisju/pubhtml?gid=238983996&single=true"
+              variant="contained">
+              Relatório
+            </Button>
           </Box>
         </Container>
       </ThemeProvider>
