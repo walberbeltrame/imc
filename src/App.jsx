@@ -29,8 +29,8 @@ class Imc extends React.Component {
     this.state = {
       peso: null,
       altura: null,
-      masculino: null,
-      maior: null
+      masculino: false,
+      maior: false
     };
   }
 
@@ -74,6 +74,16 @@ class Imc extends React.Component {
     }
   }
 
+  classificar(maior, masculino, imc) {
+    if (maior) {
+        return this.tipo(imc, 18.5, 24.9, 29.9, 34.9, 39.9);
+      } else if (masculino) {
+        return this.tipo(imc, 17.8, 26.4, 30.6, 34.9, 39.9);
+      } else {
+        return this.tipo(imc, 16.9, 25.9, 30.7, 34.9, 39.9);
+      }
+  }
+
   resultado() {
     let resultado = new String();
     let imc = this.calcular();
@@ -81,13 +91,7 @@ class Imc extends React.Component {
       resultado += imc.toFixed(2) + " - ";
       let masculino = this.state.masculino;
       let maior = this.state.maior;
-      if (maior) {
-        resultado += this.tipo(imc, 18.5, 24.9, 29.9, 34.9, 39.9);
-      } else if (masculino) {
-        resultado += this.tipo(imc, 17.8, 26.4, 30.6, 34.9, 39.9);
-      } else {
-        resultado += this.tipo(imc, 16.9, 25.9, 30.7, 34.9, 39.9);
-      }
+      resultado += this.classificar(maior, masculino, imc);
     }
     return resultado;
   }
@@ -97,13 +101,18 @@ class Imc extends React.Component {
     date = date.replace(/([^T]+)T([^\.]+).*/g, '$1 $2');
     let imc = this.calcular();
     if (imc) {
+      let masculino = this.state.masculino;
+      let maior = this.state.maior;
+      let peso = this.state.peso;
+      let altura = this.state.altura;
+      let tipo = this.classificar(maior, masculino, imc);
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       let requestOptions = {
           method: "post",
           headers: myHeaders,
           redirect: "follow",
-          body: JSON.stringify([[date,imc]])
+          body: JSON.stringify([[date,imc,tipo,masculino,maior,peso,altura]])
       };
       fetch("https://v1.nocodeapi.com/walberbeltrame/google_sheets/RzsnNxrSrCTvyeqs?tabId=Dados", requestOptions)
           .then(response => response.text())
