@@ -114,7 +114,7 @@ class Imc extends React.Component {
           redirect: "follow",
           body: JSON.stringify([[date,imc,tipo,masculino,maior,peso,altura]])
       };
-      fetch("https://v1.nocodeapi.com/walberbeltrame/google_sheets/RzsnNxrSrCTvyeqs?tabId=Dados", requestOptions)
+      fetch("<<link>?tabId=Dados", requestOptions)
           .then(response => response.text())
           .then(result => console.log(result))
           .catch(error => console.log('error', error));
@@ -191,7 +191,7 @@ class Imc extends React.Component {
               Enviar
             </Button>
             <Button
-              href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRf0xa-394vcfV_au5EVupnIPqKjvqFEw0GUgX4C45ZR0__jTEHRDVoMRPfe3mtpncxV7fKud8pisju/pubhtml?gid=238983996&single=true"
+              href="<<link>"
               variant="contained">
               Relatório
             </Button>
